@@ -1,3 +1,22 @@
 from preprocessing import *
-
-dataToAnalyze = preProcessData()
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+import pandas as pd
+from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+dataToAnalyze,target = preProcessData()
+X_train,y_train,X_test,y_test = train_test_split(dataToAnalyze,target,test_size=.3,random_state=111)
+#handling imbalanced data
+smote = SMOTE(sampling_strategy = 'auto')
+X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
+X_train = X_resampled
+y_train = y_resampled
+#normalize, no need to scale Y, as it is a binary classification
+scaler = MinMaxScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+lda = LinearDiscriminantAnalysis(n_components=10)
+principalComponents = lda.fit_transform(X_train,y_train)

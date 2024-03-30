@@ -4,6 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 #placeholder for making api call to kaggle to update dataset
 def updateData():
@@ -14,6 +15,8 @@ def updateData():
 def preProcessData():
     df = pd.read_csv("fraud test.csv")
     #Drop unneeded attributes
+    sns.countplot(x = 'is_fraud', data = df)
+    df['is_fraud'].value_counts()
     X = df.drop(columns=['is_fraud', 'dob', 'first', 'last', 'trans_num', 'cc_num'])
     y = df['is_fraud']
     # Split features into numerical and non-numerical
@@ -32,6 +35,4 @@ def preProcessData():
 
     # Preprocess the data with the set up processors
     X_preprocessed = preprocessor.fit_transform(X)
-    return X_preprocessed
-
-
+    return X_preprocessed,y
