@@ -34,12 +34,7 @@ svd = TruncatedSVD(n_components=4)
 X_train_svd = svd.fit_transform(X_train_scaled)
 X_test_svd = svd.transform(X_test_scaled)
 
-# Apply LDA
-lda = LinearDiscriminantAnalysis()
-X_train_lda = lda.fit_transform(X_train_svd, y_resampled)
-X_test_lda = lda.transform(X_test_svd)
-
-print("LDA Complete")
+print("Truncated SVD Complete")
 
 classifiers = {
     "Gaussian Naive Bayes": GaussianNB(),
@@ -55,14 +50,14 @@ rmse = {}
 snr = {}
 
 for name, clf in classifiers.items():
-    clf.fit(X_train_lda, y_resampled)
-    y_pred = clf.predict(X_test_lda)
+    clf.fit(X_train_svd, y_resampled)
+    y_pred = clf.predict(X_test_svd)
     accuracy[name] = accuracy_score(y_test, y_pred)
     rmse[name] = root_mean_squared_error(y_test, y_pred)
     snr[name] = np.mean(y_pred) / np.std(y_pred)
 
 # Display accuracy after LDA
-print("Classification Metrics after LDA:")
+print("Classification Metrics:")
 for name, acc in accuracy.items():
     print(f"{name} Accuracy: {acc:.2f}")
     print(f"{name} RMSE: {rmse[name]:.2f}")
