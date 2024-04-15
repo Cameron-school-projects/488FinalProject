@@ -30,7 +30,7 @@ X_train_scaled = scaler.fit_transform(X_resampled)
 X_test_scaled = scaler.transform(X_test)
 
 # Apply TruncatedSVD for dimensionality reduction
-svd = TruncatedSVD(n_components=4)
+svd = TruncatedSVD(n_components=6)
 X_train_svd = svd.fit_transform(X_train_scaled)
 X_test_svd = svd.transform(X_test_scaled)
 
