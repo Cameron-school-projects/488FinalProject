@@ -12,7 +12,7 @@ from sklearn.preprocessing import MaxAbsScaler
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, root_mean_squared_error
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, root_mean_squared_error
 from sklearn.linear_model import LogisticRegression
 
 dataToAnalyze, target = preProcessData()
@@ -39,13 +39,17 @@ print("Truncated SVD Complete")
 classifiers = {
     "Gaussian Naive Bayes": GaussianNB(),
     "K Neighbors Classifier": KNeighborsClassifier(),
-    "Linear Regression": LogisticRegression(solver='liblinear', multi_class = 'ovr')
+    "Linear Regression": LogisticRegression(solver='liblinear', multi_class='ovr')
 }
 
 print("Classifiers Established")
 
-# Evaluate classifiers after LDA
+# Evaluate classifiers
 accuracy = {}
+precision = {}
+sensitivity = {}
+f1 = {}
+specificity = {}
 rmse = {}
 snr = {}
 
@@ -53,12 +57,22 @@ for name, clf in classifiers.items():
     clf.fit(X_train_svd, y_resampled)
     y_pred = clf.predict(X_test_svd)
     accuracy[name] = accuracy_score(y_test, y_pred)
+    precision[name] = precision_score(y_test, y_pred)
+    sensitivity[name] = recall_score(y_test, y_pred)
+    f1[name] = f1_score(y_test, y_pred)
+    tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+    specificity[name] = tn / (tn + fp)
     rmse[name] = root_mean_squared_error(y_test, y_pred)
     snr[name] = np.mean(y_pred) / np.std(y_pred)
 
-# Display accuracy after LDA
+# Display classification metrics
 print("Classification Metrics:")
 for name, acc in accuracy.items():
     print(f"{name} Accuracy: {acc:.2f}")
+    print(f"{name} Precision: {precision[name]:.2f}")
+    print(f"{name} Sensitivity: {sensitivity[name]:.2f}")
+    print(f"{name} F1 Score: {f1[name]:.2f}")
+    print(f"{name} Specificity: {specificity[name]:.2f}")
     print(f"{name} RMSE: {rmse[name]:.2f}")
     print(f"{name} SNR: {snr[name]:.2f}")
+
