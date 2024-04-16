@@ -39,7 +39,7 @@ print("Truncated SVD Complete")
 classifiers = {
     "Gaussian Naive Bayes": GaussianNB(),
     "K Neighbors Classifier": KNeighborsClassifier(),
-    "Linear Regression": LogisticRegression(solver='liblinear', multi_class='ovr')
+    "Logistic Regression": LogisticRegression(solver='liblinear', multi_class='ovr')
 }
 
 print("Classifiers Established")
