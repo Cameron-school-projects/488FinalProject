@@ -17,16 +17,16 @@ from sklearn.linear_model import LogisticRegression
 
 dataToAnalyze, target = preProcessData()
 
+# Handling imbalanced data
+smote = SMOTE(sampling_strategy='auto')
+dataToAnalyze, target = smote.fit_resample(dataToAnalyze, target)
+
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(dataToAnalyze, target, test_size=0.3, random_state=111)
 
-# Handling imbalanced data
-smote = SMOTE(sampling_strategy='auto')
-X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
-
 # Normalize data
 scaler = MaxAbsScaler()
-X_train_scaled = scaler.fit_transform(X_resampled)
+X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Apply TruncatedSVD for dimensionality reduction
@@ -54,7 +54,7 @@ rmse = {}
 snr = {}
 
 for name, clf in classifiers.items():
-    clf.fit(X_train_svd, y_resampled)
+    clf.fit(X_train_svd, y_train)
     y_pred = clf.predict(X_test_svd)
 
     # start of data visualization code
@@ -84,8 +84,8 @@ for name, clf in classifiers.items():
     # end of visualization code
 
     accuracy[name] = accuracy_score(y_test, y_pred)
-    precision[name] = precision_score(y_test, y_pred)
-    sensitivity[name] = recall_score(y_test, y_pred)
+    precision[name] = precision_score(y_pred, y_test)
+    sensitivity[name] = recall_score(y_pred, y_test)
     f1[name] = f1_score(y_test, y_pred)
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     specificity[name] = tn / (tn + fp)
