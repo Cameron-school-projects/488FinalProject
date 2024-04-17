@@ -63,9 +63,12 @@ for name, clf in classifiers.items():
                                display_labels=clf.classes_)
 
     disp.plot()
+    plt.title("confusion matrix for " + name)
     plt.show()
 
+
     plt.hist(y_pred)
+    plt.title("histrogram for " + name)
     plt.show()
 
     corr_matrices = {}
@@ -91,6 +94,7 @@ for name, clf in classifiers.items():
 
 # code for displaying bar graph
 plt.bar(classifiers.keys(), accuracy.values(), color='skyblue')
+plt.title("accuracies for all classifiers")
 plt.show()
 
 # Display classification metrics
