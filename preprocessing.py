@@ -22,6 +22,7 @@ def preProcessData():
     # Split features into numerical and non-numerical
     numerical_cols = X.select_dtypes(include=['float64', 'int64']).columns
     categorical_cols = X.select_dtypes(include=['object']).columns
+    sns.heatmap(X[numerical_cols].corr())
 
     # set up our pre-processing
     numerical_transformer = StandardScaler()
